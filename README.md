@@ -7,5 +7,3 @@
   
   <Team>
   <Team Stats>
-    
-  
