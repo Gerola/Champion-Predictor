@@ -1,0 +1,34 @@
+Atlanta Hawks,E
+Boston Celtics,E
+Brooklyn Nets,E
+Charlotte Hornets,E
+Chicago Bulls,E
+Cleveland Cavaliers,E
+Dallas Mavericks,W
+Denver Nuggets,W
+Detroit Pistons,E
+Golden State Warriors,W
+Houston Rockets,W
+Indiana Pacers,E
+LA Clippers,W
+Los Angeles Lakers,W
+Memphis Grizzlies,W
+Miami Heat,E
+Milwaukee Bucks,E
+Minnesota Timberwolves,E
+New Orleans Pelicans,W
+New York Knicks,E
+Oklahoma City Thunder,W
+Orlando Magic,E
+Philadelphia 76ers,E
+Phoenix Suns,W
+Portland Trail Blazers,W
+Sacramento Kings,W
+San Antonio Spurs,W
+Toronto Raptors,E
+Utah Jazz,W
+Washington Wizards,E
+New Jersey Nets,E
+Seattle SuperSonics,W
+Charlotte Hornets,E
+Los Angeles Clippers,W
