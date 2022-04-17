@@ -42,9 +42,7 @@ What each feature means:<br>
     +/- - What this stat means is when a player comes in their +/- is at zero and when they go out of the game the total change<br>
             in points is their +/- and this is the team average<br>
             Example:<br>
-                The player comes in at score 15:20<br>
-                and goes out of the game at 35:35<br>
-                The +/- would be at a 5 since the total change in points was 5 and positive since<br>
+                The player comes in at score 15:20 and goes out of the game at 35:35,the +/- would be at a 5 since the total change in points was 5 and positive since<br>
                 the team gained points on the opposing team.<br>
 
 Here are the Champions for each year that was included in the data set (Reference Purposes):<br>
