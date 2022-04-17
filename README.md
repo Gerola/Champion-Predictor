@@ -44,7 +44,7 @@ What each feature means:<br>
             Example:<br>
                 The player comes in at score 15:20 and goes out of the game at 35:35, the +/- would be at a 5 since the total change in points was 5 and positive since the team gained points on the opposing team.<br>
 
-Here are the Champions for each year that was included in the data set (Reference Purposes):<br>
+Here are the Champions for each year that was included in the data set:<br>
 2000-2001: Los Angeles Lakers<br>
 2001-2002: Los Angeles Lakers<br>
 2002-2003: San Antonio Spurs<br>
