@@ -105,7 +105,8 @@ void Predict_Champ::get_Sim_and_Champ_Future()
         team_to_be_placed.stats_for_team = stats;//set the stats for this year
         champion_temp.stats_past_Years_Three.push_back(team_to_be_placed);//push this year onto this team's stats
         future_champion_vector.push_back(champion_temp);//push back the first team onto the future champ vector
-    }
+        champion_temp.stats_past_Years_Three.clear();
+     }
     First_Year.close();
     fstream Year_Two;
     Year_Two.open("2020-2021_Stats.txt",std::ios::in);
@@ -170,7 +171,6 @@ void Predict_Champ::get_Sim_and_Champ_Future()
                 find = future_champion_vector.size() + 1;
             }
         }
-
     }
     Year_Three.close();
     //Now all the stats have been found, so now the predicted stats for the next year....
@@ -180,14 +180,16 @@ void Predict_Champ::get_Sim_and_Champ_Future()
     {
         for(int stat = 0; stat < 26; stat++)
         {
-            perc_one = future_champion_vector[teams_stats].stats_past_Years_Three[0].stats_for_team[stat] / future_champion_vector[teams_stats].stats_past_Years_Three[1].stats_for_team[stat];
-            perc_two = future_champion_vector[teams_stats].stats_past_Years_Three[1].stats_for_team[stat] / future_champion_vector[teams_stats].stats_past_Years_Three[2].stats_for_team[stat];
+            perc_one = future_champion_vector[teams_stats].stats_past_Years_Three[1].stats_for_team[stat] / future_champion_vector[teams_stats].stats_past_Years_Three[0].stats_for_team[stat];
+            perc_two = future_champion_vector[teams_stats].stats_past_Years_Three[2].stats_for_team[stat] / future_champion_vector[teams_stats].stats_past_Years_Three[1].stats_for_team[stat];
             perc_one = (perc_one + perc_two) / 2;
             new_stat = perc_one * future_champion_vector[teams_stats].stats_past_Years_Three[2].stats_for_team[stat];
             stats[stat] = new_stat;
         }
+
         team_to_be_placed.stats_for_team = stats;
         team_to_be_placed.team_name = future_champion_vector[teams_stats].name;
+
         for(int conference = 0; conference < this->list_of_team_names_conference.size(); conference++)
         {
             if(this->list_of_team_names_conference[conference].name == future_champion_vector[teams_stats].name)

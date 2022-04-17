@@ -55,16 +55,16 @@ public:
         this->still_Past_Years = false;
         this->get_Stats_For_Team("2021-2022_Stats.txt");
         this->future_Champ_finding = true;
-        this->get_Sim_and_Champ_Future();
+        this->get_Sim_and_Champ_Future();//WORK ON!!!
         // this->print_Final_Teams();
 
 
-        // for(int index = 0; index < this->eastern_Conference_Teams.size(); index++)
+        // for(int index = 0; index < this->western_Conference_Teams.size(); index++)
         // {
-        //     cout << this->eastern_Conference_Teams[index].team_name << endl;
+        //     cout << this->western_Conference_Teams[index].team_name << endl;
         //     for(int stat = 0; stat < 26; stat++)
         //     {
-        //         cout << this->eastern_Conference_Teams[index].stats_for_team[stat] << " ";
+        //         cout << this->western_Conference_Teams[index].stats_for_team[stat] << " ";
         //     }
         //     cout << '\n';
         // }
