@@ -1,16 +1,13 @@
 # Data_Mining_Project_2022
 This data was taken from the official NBA website https://www.nba.com/stats/teams/traditional/?sort=W_PCT&dir=-1, with the commas added after to be able to
-    better traverse the data since it was seperated with spaces beforehand. The years were changed when going to the link the get the stats for the desired year.
+    better traverse the data since it was seperated with spaces beforehand. The years were changed when going to the link to get the stats for the desired year.
 
-How the data is arranged in the Stats Files:
-
-Explanation of the Program:
-    
-
-
-
+How the data is arranged in this way in all the Stats files:
 <Team>
 <Team Stats>
+Example:
+    Golden State Warriors
+    79,63,16,.797,48.1,115.0,43.7,89.7,48.7,11.6,31.7,36.5,16.1,20.2,79.8,9.5,35.6,45.1,27.4,13.0,8.5,4.4,3.9,19.7,19.0,7.8
 
 The numbers for each team correspond to the following features in this order as well:
 GP W L WIN% MIN PTS FGM FGA FG% 3PM 3PA 3P% FTM FTA FT% OREB DREB REB AST TOV STL BLK BLKA PF PFD +/-
@@ -75,7 +72,7 @@ Here are the Champions for each year that was included in the data set (Referenc
 2019-2020: Los Angeles Lakers
 2020-2021: Milwaukee Bucks
 
-Predicted Years:
+Predicted Years for the program:
 2021-2022
 and
 2022-2023
