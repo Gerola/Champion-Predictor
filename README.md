@@ -8,7 +8,7 @@ How the data is arranged in this way in all the Stats files:
 Example:
     Golden State Warriors
     79,63,16,.797,48.1,115.0,43.7,89.7,48.7,11.6,31.7,36.5,16.1,20.2,79.8,9.5,35.6,45.1,27.4,13.0,8.5,4.4,3.9,19.7,19.0,7.8
-
+    
 The numbers for each team correspond to the following features in this order as well:
 GP W L WIN% MIN PTS FGM FGA FG% 3PM 3PA 3P% FTM FTA FT% OREB DREB REB AST TOV STL BLK BLKA PF PFD +/-
 
