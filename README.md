@@ -17,8 +17,8 @@ What each feature means:
     GP- Games Played in the Season
     W- Wins
     L- Losses
-    WIN%- Amount of wins out of total games Played
-    MIN- total minutes played each games in average
+    WIN%- Amount of wins out of total games Played<br />
+    MIN- total minutes played each games in average<br />
     PTS- Average amount of points score in a games
     FGM- Field goals made in a game on average
     FGA- The average amount of field goals attempted in a game
