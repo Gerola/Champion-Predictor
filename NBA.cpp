@@ -3,7 +3,7 @@
         Class: Cpts 315, Spring 2022; Course Project
         Programming Assignment: Course Project
         Date: April 29, 2022
-        Description: Refer to the README
+        Description: Report
 */
 
 #include "NBA.h"
@@ -12,20 +12,20 @@ void Predict_Champ::get_champion_teams()
 {
     Past_Champions placeholder;//only a placeholder
     vector<double> nothing;//only a placeholder
-    placeholder.stats_for_team = nothing;
-    fstream Champion;
+    placeholder.stats_for_team = nothing;//placeholder vector
+    fstream Champion;//open stream
     Champion.open("Past_Champions.txt",std::ios::in);
     string temp = "", team = "";
-    int place = 0;
-    while(!Champion.eof())
+    int place = 0;//where in the string
+    while(!Champion.eof())//while not empty
     {
         getline(Champion,temp,'\n');//get each champion...
-        while(temp[place] != ':')
+        while(temp[place] != ':')//look for this and when found the next characters will be the champion
         {
             place++;//increase place until reach the team name
         }
         place++;//increase the get out of : character
-        while(place < temp.length())
+        while(place < temp.length())//go the end
         {
             team += temp[place];//add to the team name
             place += 1;
@@ -67,22 +67,23 @@ void Predict_Champ::get_Team_Conference_Info()
     Conference.close();//close the file
 }
 
-//Work on this....
 void Predict_Champ::get_Sim_and_Champ_Future()
 {
-    vector<future_Champ> future_champion_vector;
-    fstream First_Year;
-    future_Champ champion_temp;
-    Current_Teams team_to_be_placed;
+    vector<future_Champ> future_champion_vector;//vector which will hold all the teams and their stats for the past 3 seasons
+    vector<double> get_average_for_year;//average to normalize when using centered cosine similarity
+    fstream First_Year;//open the first year 2019-2020
+    future_Champ champion_temp;//what each object in the list will be
+    Current_Teams team_to_be_placed;//when needs to be pushed into the champion_temp
     First_Year.open("2019-2020_Stats.txt",std::ios::in);
-    vector<double> stats;
-    double value = 0.0;
-    string team_name = "", inital_stats = "";
-    for(int pop = 0; pop < 26; pop++)
+    vector<double> stats;//stats
+    double value = 0.0;//value after converted
+    string team_name = "", inital_stats = "";//temp strings
+    for(int pop = 0; pop < 26; pop++)//populate so you can just index into the vector
     {
         stats.push_back(0.0);
+        get_average_for_year.push_back(0.0);
     }
-    getline(First_Year,team_name,'\n');
+    getline(First_Year,team_name,'\n');//get the unwanted things at the top
     while(!First_Year.eof())
     {
         getline(First_Year,team_name,'\n');
@@ -105,12 +106,12 @@ void Predict_Champ::get_Sim_and_Champ_Future()
         team_to_be_placed.stats_for_team = stats;//set the stats for this year
         champion_temp.stats_past_Years_Three.push_back(team_to_be_placed);//push this year onto this team's stats
         future_champion_vector.push_back(champion_temp);//push back the first team onto the future champ vector
-        champion_temp.stats_past_Years_Three.clear();
+        champion_temp.stats_past_Years_Three.clear();//need to clear or will just keep pushing this list to the same temp variable
      }
     First_Year.close();
-    fstream Year_Two;
+    fstream Year_Two;//second year
     Year_Two.open("2020-2021_Stats.txt",std::ios::in);
-    getline(Year_Two,team_name,'\n');
+    getline(Year_Two,team_name,'\n');//again get the unwanted items
     while(!Year_Two.eof())
     {
         getline(Year_Two,team_name,'\n');
@@ -129,21 +130,21 @@ void Predict_Champ::get_Sim_and_Champ_Future()
                 stats[s] = value;
             }
         }
-        team_to_be_placed.stats_for_team = stats;
-        for(int find = 0; find < future_champion_vector.size(); find++)
+        team_to_be_placed.stats_for_team = stats;//name doesn't matter in this case
+        for(int find = 0; find < future_champion_vector.size(); find++)//search for this item in the list
         {
-            if(team_name == future_champion_vector[find].name)
+            if(team_name == future_champion_vector[find].name)//found
             {
-                future_champion_vector[find].stats_past_Years_Three.push_back(team_to_be_placed);
-                find = future_champion_vector.size() + 1;
+                future_champion_vector[find].stats_past_Years_Three.push_back(team_to_be_placed);//push back these stats for the team
+                find = future_champion_vector.size() + 1;//get out of the loop
             }
         }
 
     }
     Year_Two.close();
     fstream Year_Three;
-    Year_Three.open("2021-2022_Stats.txt",std::ios::in);
-    getline(Year_Three,team_name,'\n');
+    Year_Three.open("2021-2022_Stats.txt",std::ios::in);//third and most recent year
+    getline(Year_Three,team_name,'\n');//unwanted items
     while(!Year_Three.eof())
     {
         getline(Year_Three,team_name,'\n');
@@ -163,7 +164,7 @@ void Predict_Champ::get_Sim_and_Champ_Future()
             }
         }
         team_to_be_placed.stats_for_team = stats;
-        for(int find = 0; find < future_champion_vector.size(); find++)
+        for(int find = 0; find < future_champion_vector.size(); find++)//again search and place into the correct team
         {
             if(team_name == future_champion_vector[find].name)
             {
@@ -174,22 +175,40 @@ void Predict_Champ::get_Sim_and_Champ_Future()
     }
     Year_Three.close();
     //Now all the stats have been found, so now the predicted stats for the next year....
-    double perc_one = 0.0, perc_two = 0.0, new_stat = 0.0;
+
+    double new_stat = 0.0;
     char conference_place = '\0';
     for(int teams_stats = 0; teams_stats < future_champion_vector.size(); teams_stats++)
     {
-        for(int stat = 0; stat < 26; stat++)
+        for(int stat = 3; stat < 26; stat++)
         {
-            perc_one = future_champion_vector[teams_stats].stats_past_Years_Three[1].stats_for_team[stat] / future_champion_vector[teams_stats].stats_past_Years_Three[0].stats_for_team[stat];
-            perc_two = future_champion_vector[teams_stats].stats_past_Years_Three[2].stats_for_team[stat] / future_champion_vector[teams_stats].stats_past_Years_Three[1].stats_for_team[stat];
-            perc_one = (perc_one + perc_two) / 2;
-            new_stat = perc_one * future_champion_vector[teams_stats].stats_past_Years_Three[2].stats_for_team[stat];
-            stats[stat] = new_stat;
+            new_stat = (future_champion_vector[teams_stats].stats_past_Years_Three[0].stats_for_team[stat]) + 
+            (5 * future_champion_vector[teams_stats].stats_past_Years_Three[1].stats_for_team[stat])+ 
+            (10 * future_champion_vector[teams_stats].stats_past_Years_Three[2].stats_for_team[stat]);
+                //Apply different weights to the stats 10 for the most recent and then 5 and 1 for the more not so recent
+                new_stat = new_stat / 16.0;//divide by 16 the total amount of items added
+                if(stat == 3)
+                {
+                        stats[0] = 82;//constant each team will play 82 games
+                        get_average_for_year[0] += 82;
+                        stats[1] = 82 * new_stat;//see how many they win by their percentage
+                        get_average_for_year[1] += stats[1];
+                        stats[2] = 82 - stats[1];//now losses
+                        get_average_for_year[2] += stats[2];
+                        stats[stat] = new_stat;//now just set the percentage
+                        get_average_for_year[stat] += stats[stat];
+                }
+                else
+                {
+                        stats[stat] = new_stat;
+                        get_average_for_year[stat] += stats[stat];
+                }
         }
 
-        team_to_be_placed.stats_for_team = stats;
-        team_to_be_placed.team_name = future_champion_vector[teams_stats].name;
+        team_to_be_placed.stats_for_team = stats;//now current team object
+        team_to_be_placed.team_name = future_champion_vector[teams_stats].name;//set the name
 
+        //Search and find the conference they are a part of...
         for(int conference = 0; conference < this->list_of_team_names_conference.size(); conference++)
         {
             if(this->list_of_team_names_conference[conference].name == future_champion_vector[teams_stats].name)
@@ -198,50 +217,57 @@ void Predict_Champ::get_Sim_and_Champ_Future()
                 conference = this->list_of_team_names_conference.size() + 1;
             }
         }
-        if(conference_place == 'E')
+        if(conference_place == 'E')//push to eastern
         {
             this->eastern_Conference_Teams.push_back(team_to_be_placed);
         }
-        else
+        else//or western
         {
             this->western_Conference_Teams.push_back(team_to_be_placed);
         }
     }
+    for(int normalize = 0; normalize < 26; normalize++)//get the average for the year to be able to normalize
+    {
+        get_average_for_year[normalize] = get_average_for_year[normalize] / 30;
+    }
+    this->average_of_past_years = get_average_for_year;//set that
+    this->calculate_Similarity();//run similarity
+    this->playoff_Sim();//run playoff sim
 }
 
 int Predict_Champ::get_Points_For_Team(double twos, double threes, double free_throws, double two_per, double three_per, double free_per)
 {
 
-    int random_number = rand() % 100 + 1;
-    int points = 0;
-    for(int point_two = 0; point_two <= twos; point_two++)
+    int random_number = rand() % 100 + 1;//initial random number
+    int points = 0;//total points
+    for(int point_two = 0; point_two <= twos; point_two++)//two point shots
     {
-        random_number = rand() % 100 + 1;
-        if(random_number <= two_per)
+        random_number = rand() % 100 + 1;//random number
+        if(random_number <= two_per)//less than or equal to then add the points
         {
             points += 2;
         }
     }
-    for(int three_points = 0; three_points <= threes; three_points++)
+    for(int three_points = 0; three_points <= threes; three_points++)//number of three point shots
     {
         random_number = rand() % 100 + 1;
-        if(random_number <= three_per)
+        if(random_number <= three_per)//less than or equal to add three points
         {
             points += 3;
         }
 
     }
-    for(int one_points = 0; one_points <= free_throws; one_points++)
+    for(int one_points = 0; one_points <= free_throws; one_points++)//free throws
     {
         random_number = rand() % 100 + 1;
-        if(random_number <= free_per)
+        if(random_number <= free_per)//less than or equal to add one point
         {
             points += 1;
         }
 
     }
 
-    return points;
+    return points;//return the total amount of points scored for this game
 }
 
 Current_Teams Predict_Champ::get_winner_From_two(Current_Teams one, Current_Teams two)
@@ -256,9 +282,9 @@ Current_Teams Predict_Champ::get_winner_From_two(Current_Teams one, Current_Team
 
                 points_two = get_Points_For_Team(two.stats_for_team[7] - two.stats_for_team[10], two.stats_for_team[10], //get the total points
                 two.stats_for_team[13], two.stats_for_team[8],two.stats_for_team[11],two.stats_for_team[14]);
-                if(points_one == points_two)
+                if(points_one == points_two)//if they are equal
                 {
-                    if(one.stats_for_team[3] > two.stats_for_team[3])//win %
+                    if(one.stats_for_team[3] > two.stats_for_team[3])//win % compare
                     {
                         one_team++;
                     }
@@ -279,29 +305,28 @@ Current_Teams Predict_Champ::get_winner_From_two(Current_Teams one, Current_Team
                     }
 
                 }
-                else if(points_one > points_two)
+                else if(points_one > points_two)//team one greater points
                 {
                     one_team++;
                 }
-                else
+                else//team two greater points
                 {
                     two_team++;
                 }
-                if(one_team == 4)
+                if(one_team == 4)//won four game
                 {
                     t_one = 1;
                     returning_Team = one;
                 }
-                else if (two_team == 4)
+                else if (two_team == 4)//won four games
                 {
                     t_two = 1;
                     returning_Team = two;
                 }
             }
 
-            return returning_Team;
+            return returning_Team;//return the winning team
 }
-//Add to this like % and such....
 void Predict_Champ::print_Final_Teams()
 {
     fstream Champ;
@@ -314,11 +339,49 @@ void Predict_Champ::print_Final_Teams()
         {
         Champ << ", ";
         }
+        else
+        {
+            Champ << " ";
+        }
     }
+    Champ << this->confidence_team_in_Final_Six;
+    Champ << "%";
     Champ << '\n';
     Champ << "Predicted Champion 2021-2022: ";
     Champ << this->champion_current_year;
+    Champ << " " << this->confidence_team_Pred_Champ << "%";
+    Champ << '\n';
+    Champ << "Final Teams 2022-2023: ";
+    for(int teams = 0; teams < 6; teams++)
+    {
+        Champ << this->final_teams_next_year[teams];
+        if(teams != 5)
+        {
+            Champ << ", ";
+        }
+        else
+        {
+            Champ << " ";
+        }
+    }
+    Champ << this->confidence_team_in_Final_Six;
+    Champ << "%" << '\n';
+    Champ << "Predicted Champion 2022-2023: ";
+    Champ << this->champion_next_year;
+    Champ << " " << double(this->confidence_team_Pred_Champ) << "%";
     Champ.close(); 
+}
+void Predict_Champ::get_Confidence_of_Predications()
+{
+    int total_Six = 0, total_Champ = 0;
+    for(int final = 0; final < 20; final++)//how much was correct
+    {
+        total_Six += this->champ_team_in_Final_Six[final];
+        total_Champ += this->champ_team_Pred_Six[final];
+    }
+
+    this->confidence_team_in_Final_Six = (double(total_Six) / 20.0) * 100;//multiple by 100 to get a percentage
+    this->confidence_team_Pred_Champ = (double(total_Champ) / 20.0) * 100;
 }
 
 //Playoff Simulation in this function...
@@ -331,9 +394,6 @@ void Predict_Champ::playoff_Sim()
     Current_Teams winner;
     Current_Teams team_that_won[2]; // 0 will be the west and 1 will be the east
     int t_one_west = 0, t_two_west = 0, t_one_east = 0, t_two_east = 0, t_three_east = 0, t_three_west = 0, t_one = 0, t_two = 0;
-    int one_team = 0, two_team = 0;
-    int points_one = 0, points_two = 0;//the total points for the two teams competing
-    int two = 0, three = 0, free = 0;//amount of shots
     team_one_west = this->final_Six_west[0];
     team_two_west = this->final_Six_west[1];
     team_three_west = this->final_Six_west[2];
@@ -357,7 +417,7 @@ void Predict_Champ::playoff_Sim()
             this->champ_team_in_Final_Six[this->place_In_Champ_Calculations - 1] = 0; // not in the final four teams...
         }
     }
-    else if(this->future_Champ_finding == true)//year 2022-2023
+    else if(this->future_Champ_finding == true)//year 2022-2023, note to be printed out later
     {
         this->final_teams_next_year[0] = team_one_west.team_name;
         this->final_teams_next_year[1] = team_two_west.team_name;
@@ -380,15 +440,15 @@ void Predict_Champ::playoff_Sim()
     while(t_one_west != 10 && t_two_west != 10 && t_one_east != 10 && t_two_east != 10 && t_three_east != 10 && t_three_west != 10)//won a total of 10 times...
     {
             //western conference first    
-            team_that_won[0] = get_winner_From_two(team_two_west,team_three_west);
+            team_that_won[0] = get_winner_From_two(team_two_west,team_three_west);//second and third teams play
             //eastern conference next
-            team_that_won[1] = get_winner_From_two(team_two_east,team_three_east);
+            team_that_won[1] = get_winner_From_two(team_two_east,team_three_east);//second and third teams play
             //western finals
-            final_Teams[0] = get_winner_From_two(team_that_won[0], team_one_west);
+            final_Teams[0] = get_winner_From_two(team_that_won[0], team_one_west);//winner and the number one team
             //eastern finals
-            final_Teams[1] = get_winner_From_two(team_that_won[1], team_one_east);
+            final_Teams[1] = get_winner_From_two(team_that_won[1], team_one_east);//winner and the number one team
             //Finals
-            winner = get_winner_From_two(final_Teams[0],final_Teams[1]);
+            winner = get_winner_From_two(final_Teams[0],final_Teams[1]);//the final teams
 
             //check to see who won the championship for this iteration
             if(winner.team_name == team_one_west.team_name)
@@ -514,9 +574,9 @@ void Predict_Champ::playoff_Sim()
     }
     else//the current year 2021-2022
     {
-        Past_Champions champion;
-        vector<double> champ;
-        double data = 0.0;
+        Past_Champions champion;//make past champion object
+        vector<double> champ;//vector for the champion team
+        double data = 0.0;//what the normalized value is
         if(t_one_east == 10)
         {
             this->champion_current_year = team_one_east.team_name;
@@ -572,9 +632,9 @@ void Predict_Champ::playoff_Sim()
             }
 
         }
-        champion.stats_for_team = champ;
-        champion.team_name = this->champion_current_year;
-        this->past_championship_teams.push_back(champion);
+        champion.stats_for_team = champ;//after all normalized set to the stats
+        champion.team_name = this->champion_current_year;//set the name
+        this->past_championship_teams.push_back(champion);//push back and with the functions called it will increment the number of teams
     }
 
 }
@@ -595,11 +655,11 @@ void Predict_Champ::calculate_Similarity()
     {
         for(int i = 0; i < 26; i++)
         {
-            champ_mag += this->past_championship_teams[champ].stats_for_team[i] * this->past_championship_teams[champ].stats_for_team[i]; 
+            champ_mag += this->past_championship_teams[champ].stats_for_team[i] * this->past_championship_teams[champ].stats_for_team[i]; //get the magnitude of the champ vector
         }
         champ_mag = sqrt(champ_mag);
         //Now for all the teams...
-        for(int west = 0; west < this->western_Conference_Teams.size(); west++)
+        for(int west = 0; west < this->western_Conference_Teams.size(); west++)//calulate the similarity with all the western teams
         {
             for(int values = 0; values < 26; values++)
             {
@@ -608,12 +668,12 @@ void Predict_Champ::calculate_Similarity()
             }
             team_mag = sqrt(team_mag);
             
-            sim = numerator / (team_mag * champ_mag);
-            this->western_Conference_Teams[west].similarity += sim;
-            numerator = 0.0;
+            sim = numerator / (team_mag * champ_mag);//actual similarity
+            this->western_Conference_Teams[west].similarity += sim;//add to the total sim
+            numerator = 0.0;//reset values
             team_mag = 0.0;
         }
-        for(int east = 0; east < this->eastern_Conference_Teams.size(); east++)
+        for(int east = 0; east < this->eastern_Conference_Teams.size(); east++)//now eastern conference
         {
             for(int values = 0; values < 26; values++)
             {
@@ -674,7 +734,7 @@ void Predict_Champ::calculate_Similarity()
             this->final_Six_east[2] = this->eastern_Conference_Teams[east];
         }
     }
-    //Now have the two top teams from each conference...
+    //Now have the three top teams from each conference...
 }
 
 void Predict_Champ::get_Stats_Zero_One()
@@ -855,6 +915,6 @@ void Predict_Champ::get_Stats_For_Team(string file)
 
     //clear the vectors and increase the championship years done...
     this->place_In_Champ_Calculations++;//after all done with everything increase the value...
-    this->eastern_Conference_Teams.clear();
+    this->eastern_Conference_Teams.clear();//clear the vectors
     this->western_Conference_Teams.clear();
 }

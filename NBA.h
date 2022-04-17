@@ -3,7 +3,7 @@
         Class: Cpts 315, Spring 2022; Course Project
         Programming Assignment: Course Project
         Date: April 29, 2022
-        Description: Refer to the README
+        Description: Report
 */
 
 #include <math.h>
@@ -26,13 +26,14 @@ public:
         this->list_of_team_names_conference.clear();
         this->eastern_Conference_Teams.clear();
         this->western_Conference_Teams.clear();
+        this->average_of_past_years.clear();
     }
     void Run_Program()
     {
-        this->get_champion_teams();//Passed
-        this->get_Team_Conference_Info();//Passed
-        this->get_Stats_Zero_One();//Passed
-        this->get_Stats_For_Team("2001-2002_Stats.txt");
+        this->get_champion_teams();//Get all past champions
+        this->get_Team_Conference_Info();//Get conference information
+        this->get_Stats_Zero_One();//Get stats for the first year
+        this->get_Stats_For_Team("2001-2002_Stats.txt");//Get stats all other years
         this->get_Stats_For_Team("2002-2003_Stats.txt");
         this->get_Stats_For_Team("2003-2004_Stats.txt");
         this->get_Stats_For_Team("2004-2005_Stats.txt");
@@ -52,30 +53,12 @@ public:
         this->get_Stats_For_Team("2018-2019_Stats.txt");
         this->get_Stats_For_Team("2019-2020_Stats.txt");
         this->get_Stats_For_Team("2020-2021_Stats.txt");
-        this->still_Past_Years = false;
-        this->get_Stats_For_Team("2021-2022_Stats.txt");
-        this->future_Champ_finding = true;
-        this->get_Sim_and_Champ_Future();//WORK ON!!!
-        // this->print_Final_Teams();
-
-
-        // for(int index = 0; index < this->western_Conference_Teams.size(); index++)
-        // {
-        //     cout << this->western_Conference_Teams[index].team_name << endl;
-        //     for(int stat = 0; stat < 26; stat++)
-        //     {
-        //         cout << this->western_Conference_Teams[index].stats_for_team[stat] << " ";
-        //     }
-        //     cout << '\n';
-        // }
-
-    //   int total = 0;
-    //   for(int index = 0; index < 20; index++)
-    //   {
-    //       total += this->champ_team_Pred_Six[index];
-    //   }
-
-    // cout << double(double(total)/20)*20 << endl;
+        this->still_Past_Years = false;//No longer in the past
+        this->get_Stats_For_Team("2021-2022_Stats.txt");//Current teams
+        this->future_Champ_finding = true;//Now future
+        this->get_Sim_and_Champ_Future();//Function for stats and the predictions
+        this->get_Confidence_of_Predications();//get the confidence
+        this->print_Final_Teams();//print the results
 }
 
 private:
@@ -86,7 +69,7 @@ private:
     void get_Stats_For_Team(string file);//Get the stats for the second year included
     //Used to get the stats for the following year...
     void get_Sim_and_Champ_Future();//don't need to get the stats, so get average and then call the sim and playoff functions...
-    
+    void get_Confidence_of_Predications();
 
     //Print the output of the program
     void print_Final_Teams();
@@ -111,7 +94,7 @@ private:
     //used for the confidence levels...
     int champ_team_in_Final_Six[20];//used to find the confidence
     int champ_team_Pred_Six[20];
-    double confidence_team_in_Final_Four;//actual confidence levels from past calulations
+    double confidence_team_in_Final_Six;//actual confidence levels from past calulations
     double confidence_team_Pred_Champ;
     bool still_Past_Years = true;//know if past is still being looked at
     bool future_Champ_finding = false;//to know if the future is being predicted

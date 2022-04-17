@@ -3,7 +3,7 @@
         Class: Cpts 315, Spring 2022; Course Project
         Programming Assignment: Course Project
         Date: April 29, 2022
-        Description: Refer to the README
+        Description: Report
 */
 
 #include <iostream>
