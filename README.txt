@@ -5,6 +5,7 @@ This data was taken from the official NBA website https://www.nba.com/stats/team
 How the data is arranged in this way in all the Stats files:
 <Team>
 <Team Stats>
+    
 Example:
     Golden State Warriors
     79,63,16,.797,48.1,115.0,43.7,89.7,48.7,11.6,31.7,36.5,16.1,20.2,79.8,9.5,35.6,45.1,27.4,13.0,8.5,4.4,3.9,19.7,19.0,7.8
@@ -45,9 +46,6 @@ What each feature means:
                 and goes out of the game at 35:35
                 The +/- would be at a 5 since the total change in points was 5 and positive since
                 the team gained points on the opposing team.
-
-
-
 
 Here are the Champions for each year that was included in the data set (Reference Purposes):
 2000-2001: Los Angeles Lakers
