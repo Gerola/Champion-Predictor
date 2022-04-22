@@ -38,11 +38,10 @@ void Predict_Champ::get_champion_teams()
 }
 void Predict_Champ::get_Team_Conference_Info()
 {
-    Team_Conference placeholder;
-    fstream Conference;
+    Team_Conference placeholder;//temp variable to populate the list
+    fstream Conference;//Files to be opened
     Conference.open("Teams_and_Conference.txt",std::ios::in);//open the file to be read
     string temp = "", team = "";//get some string
-    char conf_place = '\0';//char for the conference
     int place = 0;//place in the string
     while(!Conference.eof())//while still things to be read in
     { 
@@ -53,8 +52,7 @@ void Predict_Champ::get_Team_Conference_Info()
             place +=1;
         }
         place+= 1;//only need to go one more space to get the conference
-        conf_place = temp[place];//set the conference
-        placeholder.conference = conf_place;//set to the placeholder
+        placeholder.conference = temp[place];//set the conference
         placeholder.name = team;//set the team name
 
         this->list_of_team_names_conference.push_back(placeholder);//pushback to the desired list
@@ -73,7 +71,6 @@ void Predict_Champ::get_Sim_and_Champ_Future()
     future_Champ champion_temp;//what each object in the list will be
     Current_Teams team_to_be_placed;//when needs to be pushed into the champion_temp
     First_Year.open("2019-2020_Stats.txt",std::ios::in);
-    double value = 0.0;//value after converted
     string team_name = "", inital_stats = "";//temp strings
     for(int pop = 0; pop < 26; pop++)//populate so you can just index into the vector
     {
@@ -88,14 +85,12 @@ void Predict_Champ::get_Sim_and_Champ_Future()
             if(s != 25)
             {
                 getline(First_Year,inital_stats,',');
-                value = stold(inital_stats);
-                team_to_be_placed.stats_for_team[s] = value;
+                team_to_be_placed.stats_for_team[s] = stold(inital_stats);
             }
             else
             {
                 getline(First_Year,inital_stats,'\n');
-                value = stold(inital_stats);
-                team_to_be_placed.stats_for_team[s] = value;
+                team_to_be_placed.stats_for_team[s] = stold(inital_stats);
             }
         }
         champion_temp.name = team_name;//set the name for the larger list
@@ -115,14 +110,12 @@ void Predict_Champ::get_Sim_and_Champ_Future()
             if(s != 25)
             {
                 getline(Year_Two,inital_stats,',');
-                value = stold(inital_stats);
-                team_to_be_placed.stats_for_team[s] = value;
+                team_to_be_placed.stats_for_team[s] = stold(inital_stats);
             }
             else
             {
                 getline(Year_Two,inital_stats,'\n');
-                value = stold(inital_stats);
-                team_to_be_placed.stats_for_team[s] = value;
+                team_to_be_placed.stats_for_team[s] = stold(inital_stats);
             }
         }
         for(int find = 0; find < future_champion_vector.size(); find++)//search for this item in the list
@@ -147,14 +140,12 @@ void Predict_Champ::get_Sim_and_Champ_Future()
             if(s != 25)
             {
                 getline(Year_Three,inital_stats,',');
-                value = stold(inital_stats);
-                team_to_be_placed.stats_for_team[s] = value;
+                team_to_be_placed.stats_for_team[s] = stold(inital_stats);
             }
             else
             {
                 getline(Year_Three,inital_stats,'\n');
-                value = stold(inital_stats);
-                team_to_be_placed.stats_for_team[s] = value;
+                team_to_be_placed.stats_for_team[s] = stold(inital_stats);
             }
         }
         for(int find = 0; find < future_champion_vector.size(); find++)//again search and place into the correct team
@@ -170,7 +161,6 @@ void Predict_Champ::get_Sim_and_Champ_Future()
     //Now all the stats have been found, so now the predicted stats for the next year....
 
     double new_stat = 0.0;
-    char conference_place = '\0';
     for(int teams_stats = 0; teams_stats < future_champion_vector.size(); teams_stats++)
     {
         for(int stat = 3; stat < 26; stat++)
@@ -202,21 +192,22 @@ void Predict_Champ::get_Sim_and_Champ_Future()
         //Search and find the conference they are a part of...
         for(int conference = 0; conference < this->list_of_team_names_conference.size(); conference++)
         {
-            if(this->list_of_team_names_conference[conference].name == future_champion_vector[teams_stats].name)
+            if(this->list_of_team_names_conference[conference].name == team_to_be_placed.team_name)
             {
-                conference_place = this->list_of_team_names_conference[conference].conference;
-                conference = this->list_of_team_names_conference.size() + 1;
+                    if(this->list_of_team_names_conference[conference].conference == 'E')//push to eastern
+                    {
+                        this->eastern_Conference_Teams.push_back(team_to_be_placed);
+                    }
+                   else//or western
+                    {
+                        this->western_Conference_Teams.push_back(team_to_be_placed);
+                    }
+                conference = this->list_of_team_names_conference.size() + 1;//kick out of the loop
             }
         }
-        if(conference_place == 'E')//push to eastern
-        {
-            this->eastern_Conference_Teams.push_back(team_to_be_placed);
-        }
-        else//or western
-        {
-            this->western_Conference_Teams.push_back(team_to_be_placed);
-        }
+        
     }
+     //Get the average for this particular similulated year
     for(int normalize = 0; normalize < 26; normalize++)//get the average for the year to be able to normalize
     {
         get_average_for_year[normalize] = get_average_for_year[normalize] / 30;
@@ -226,14 +217,15 @@ void Predict_Champ::get_Sim_and_Champ_Future()
     this->playoff_Sim();//run playoff sim
 }
 
+//Look over this function...
 int Predict_Champ::get_Points_For_Team(double twos, double threes, double free_throws, double two_per, double three_per, double free_per)
 {
 
-    int random_number = rand() % 100 + 1;//initial random number
+    double random_number = rand() % 100 + 1;//initial random number
     int points = 0;//total points
     for(int point_two = 0; point_two <= twos; point_two++)//two point shots
     {
-        random_number = rand() % 100 + 1;//random number
+        random_number = double(rand()) % 100 + 1;//random number
         if(random_number <= two_per)//less than or equal to then add the points
         {
             points += 2;
@@ -241,7 +233,7 @@ int Predict_Champ::get_Points_For_Team(double twos, double threes, double free_t
     }
     for(int three_points = 0; three_points <= threes; three_points++)//number of three point shots
     {
-        random_number = rand() % 100 + 1;
+        random_number = double(rand()) % 100 + 1;
         if(random_number <= three_per)//less than or equal to add three points
         {
             points += 3;
@@ -250,7 +242,7 @@ int Predict_Champ::get_Points_For_Team(double twos, double threes, double free_t
     }
     for(int one_points = 0; one_points <= free_throws; one_points++)//free throws
     {
-        random_number = rand() % 100 + 1;
+        random_number = double(rand()) % 100 + 1;
         if(random_number <= free_per)//less than or equal to add one point
         {
             points += 1;
@@ -307,11 +299,11 @@ Current_Teams Predict_Champ::get_winner_From_two(Current_Teams &one, Current_Tea
                 if(one_team == 4)//won four game
                 {
                     t_one = 1;
-                    returning_Team = one;
+                    returning_Team = one;//set the winning team
                 }
                 else if (two_team == 4)//won four games
                 {
-                    t_two = 1;
+                    t_two = 1;//set the winning team
                     returning_Team = two;
                 }
             }
