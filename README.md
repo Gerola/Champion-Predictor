@@ -4,4 +4,4 @@
 Matthew Gerola<br>
 Washington State University<br>
 Spring 2022<br>
-**Refer to the Report PDF**<br>
+**Refer to the Report PDF for more information**<br>
