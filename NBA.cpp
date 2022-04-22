@@ -11,8 +11,6 @@
 void Predict_Champ::get_champion_teams()
 {
     Past_Champions placeholder;//only a placeholder
-    vector<double> nothing;//only a placeholder
-    placeholder.stats_for_team = nothing;//placeholder vector
     fstream Champion;//open stream
     Champion.open("Past_Champions.txt",std::ios::in);
     string temp = "", team = "";
@@ -44,7 +42,7 @@ void Predict_Champ::get_Team_Conference_Info()
     fstream Conference;
     Conference.open("Teams_and_Conference.txt",std::ios::in);//open the file to be read
     string temp = "", team = "";//get some string
-    char confernce_placement = '\0';//char for the conference
+    char conf_place = '\0';//char for the conference
     int place = 0;//place in the string
     while(!Conference.eof())//while still things to be read in
     { 
@@ -55,8 +53,8 @@ void Predict_Champ::get_Team_Conference_Info()
             place +=1;
         }
         place+= 1;//only need to go one more space to get the conference
-        confernce_placement = temp[place];//set the conference
-        placeholder.conference = confernce_placement;//set to the placeholder
+        conf_place = temp[place];//set the conference
+        placeholder.conference = conf_place;//set to the placeholder
         placeholder.name = team;//set the team name
 
         this->list_of_team_names_conference.push_back(placeholder);//pushback to the desired list
@@ -75,12 +73,10 @@ void Predict_Champ::get_Sim_and_Champ_Future()
     future_Champ champion_temp;//what each object in the list will be
     Current_Teams team_to_be_placed;//when needs to be pushed into the champion_temp
     First_Year.open("2019-2020_Stats.txt",std::ios::in);
-    vector<double> stats;//stats
     double value = 0.0;//value after converted
     string team_name = "", inital_stats = "";//temp strings
     for(int pop = 0; pop < 26; pop++)//populate so you can just index into the vector
     {
-        stats.push_back(0.0);
         get_average_for_year.push_back(0.0);
     }
     getline(First_Year,team_name,'\n');//get the unwanted things at the top
@@ -93,17 +89,16 @@ void Predict_Champ::get_Sim_and_Champ_Future()
             {
                 getline(First_Year,inital_stats,',');
                 value = stold(inital_stats);
-                stats[s] = value;
+                team_to_be_placed.stats_for_team[s] = value;
             }
             else
             {
                 getline(First_Year,inital_stats,'\n');
                 value = stold(inital_stats);
-                stats[s] = value;
+                team_to_be_placed.stats_for_team[s] = value;
             }
         }
         champion_temp.name = team_name;//set the name for the larger list
-        team_to_be_placed.stats_for_team = stats;//set the stats for this year
         champion_temp.stats_past_Years_Three.push_back(team_to_be_placed);//push this year onto this team's stats
         future_champion_vector.push_back(champion_temp);//push back the first team onto the future champ vector
         champion_temp.stats_past_Years_Three.clear();//need to clear or will just keep pushing this list to the same temp variable
@@ -121,16 +116,15 @@ void Predict_Champ::get_Sim_and_Champ_Future()
             {
                 getline(Year_Two,inital_stats,',');
                 value = stold(inital_stats);
-                stats[s] = value;
+                team_to_be_placed.stats_for_team[s] = value;
             }
             else
             {
                 getline(Year_Two,inital_stats,'\n');
                 value = stold(inital_stats);
-                stats[s] = value;
+                team_to_be_placed.stats_for_team[s] = value;
             }
         }
-        team_to_be_placed.stats_for_team = stats;//name doesn't matter in this case
         for(int find = 0; find < future_champion_vector.size(); find++)//search for this item in the list
         {
             if(team_name == future_champion_vector[find].name)//found
@@ -154,16 +148,15 @@ void Predict_Champ::get_Sim_and_Champ_Future()
             {
                 getline(Year_Three,inital_stats,',');
                 value = stold(inital_stats);
-                stats[s] = value;
+                team_to_be_placed.stats_for_team[s] = value;
             }
             else
             {
                 getline(Year_Three,inital_stats,'\n');
                 value = stold(inital_stats);
-                stats[s] = value;
+                team_to_be_placed.stats_for_team[s] = value;
             }
         }
-        team_to_be_placed.stats_for_team = stats;
         for(int find = 0; find < future_champion_vector.size(); find++)//again search and place into the correct team
         {
             if(team_name == future_champion_vector[find].name)
@@ -182,30 +175,28 @@ void Predict_Champ::get_Sim_and_Champ_Future()
     {
         for(int stat = 3; stat < 26; stat++)
         {
-            new_stat = (future_champion_vector[teams_stats].stats_past_Years_Three[0].stats_for_team[stat]) + 
-            (5 * future_champion_vector[teams_stats].stats_past_Years_Three[1].stats_for_team[stat])+ 
-            (10 * future_champion_vector[teams_stats].stats_past_Years_Three[2].stats_for_team[stat]);
-                //Apply different weights to the stats 10 for the most recent and then 5 and 1 for the more not so recent
-                new_stat = new_stat / 16.0;//divide by 16 the total amount of items added
+            new_stat = ( future_champion_vector[teams_stats].stats_past_Years_Three[0].stats_for_team[stat]) + 
+            (8 * future_champion_vector[teams_stats].stats_past_Years_Three[1].stats_for_team[stat])+ 
+            (15 * future_champion_vector[teams_stats].stats_past_Years_Three[2].stats_for_team[stat]);
+                //Apply different weights to the stats 15 for the most recent and then 8 and 1 for the more not so recent years
+                new_stat = new_stat / 24.0;//divide by 24 the total amount of items added
                 if(stat == 3)
                 {
-                        stats[0] = 82;//constant each team will play 82 games
+                        team_to_be_placed.stats_for_team[0] = 82;//constant each team will play 82 games
                         get_average_for_year[0] += 82;
-                        stats[1] = 82 * new_stat;//see how many they win by their percentage
-                        get_average_for_year[1] += stats[1];
-                        stats[2] = 82 - stats[1];//now losses
-                        get_average_for_year[2] += stats[2];
-                        stats[stat] = new_stat;//now just set the percentage
-                        get_average_for_year[stat] += stats[stat];
+                        team_to_be_placed.stats_for_team[1] = int(82 * new_stat);//see how many they win by their percentage
+                        get_average_for_year[1] += team_to_be_placed.stats_for_team[1];
+                        team_to_be_placed.stats_for_team[2] = 82 - team_to_be_placed.stats_for_team[1];//now losses
+                        get_average_for_year[2] += team_to_be_placed.stats_for_team[2];
+                        team_to_be_placed.stats_for_team[stat] = new_stat;//now just set the percentage
+                        get_average_for_year[stat] += team_to_be_placed.stats_for_team[stat];
                 }
                 else
                 {
-                        stats[stat] = new_stat;
-                        get_average_for_year[stat] += stats[stat];
+                        team_to_be_placed.stats_for_team[stat] = new_stat;
+                        get_average_for_year[stat] += team_to_be_placed.stats_for_team[stat];
                 }
         }
-
-        team_to_be_placed.stats_for_team = stats;//now current team object
         team_to_be_placed.team_name = future_champion_vector[teams_stats].name;//set the name
 
         //Search and find the conference they are a part of...
@@ -270,7 +261,7 @@ int Predict_Champ::get_Points_For_Team(double twos, double threes, double free_t
     return points;//return the total amount of points scored for this game
 }
 
-Current_Teams Predict_Champ::get_winner_From_two(Current_Teams one, Current_Teams two)
+Current_Teams Predict_Champ::get_winner_From_two(Current_Teams &one, Current_Teams &two)
 {
     Current_Teams returning_Team;
     int points_one = 0, points_two = 0, t_two = 0, t_one = 0, one_team = 0, two_team = 0;
@@ -805,8 +796,8 @@ void Predict_Champ::get_Stats_Zero_One()
 }
 void Predict_Champ::get_Stats_For_Team(string file)
 {  
-    fstream Year_Two;
-    Year_Two.open(file,std::ios::in);
+    fstream Stats;
+    Stats.open(file,std::ios::in);
     string temp = "", stat_inital = "";
     double stat_value = 0.0;
     int place = 0, total_teams = 0;
@@ -818,23 +809,27 @@ void Predict_Champ::get_Stats_For_Team(string file)
     {
          champion = this->past_championship_teams[this->place_In_Champ_Calculations].team_name;//set the team name to the first champion is this case for 2000-2001 year
     }
+    else
+    {
+        champion = "N/A";//not applicable because it is the present teams being looked at...
+    }
     for(int pop = 0; pop < 26; pop++)
     {
         champion_vector.push_back(0.0);//so the placing goes by quicker...
         average_of_year.push_back(0.0);
         team_total.push_back(0.0);
     }
-    getline(Year_Two,temp,'\n');
-    while(!Year_Two.eof())
+    getline(Stats,temp,'\n');
+    while(!Stats.eof())
     {
-        getline(Year_Two,temp,'\n');
+        getline(Stats,temp,'\n');
         if(temp == champion)
         {
             for(int t = 0; t < 26; t++)
             {
                 if(t != 25)
                 {
-                    getline(Year_Two,stat_inital,',');
+                    getline(Stats,stat_inital,',');
                     stat_value = stold(stat_inital);
                     champion_vector[t] = stat_value;
                     team_total[t] = stat_value;
@@ -842,7 +837,7 @@ void Predict_Champ::get_Stats_For_Team(string file)
                 }
                 else
                 {
-                    getline(Year_Two,stat_inital,'\n');
+                    getline(Stats,stat_inital,'\n');
                     stat_value = stold(stat_inital);
                     average_of_year[t] += stat_value;
                     team_total[t] = stat_value;
@@ -856,14 +851,14 @@ void Predict_Champ::get_Stats_For_Team(string file)
             {
                 if(t != 25)
                 {
-                    getline(Year_Two,stat_inital,',');
+                    getline(Stats,stat_inital,',');
                     stat_value = stold(stat_inital);
                     team_total[t] = stat_value;
                     average_of_year[t] += stat_value;
                 }
                 else
                 {
-                    getline(Year_Two,stat_inital,'\n');
+                    getline(Stats,stat_inital,'\n');
                     stat_value = stold(stat_inital);
                     average_of_year[t] += stat_value;
                     team_total[t] = stat_value;
@@ -896,7 +891,7 @@ void Predict_Champ::get_Stats_For_Team(string file)
             place = 0;
             total_teams++;
     }
-    Year_Two.close();
+    Stats.close();
     //normalize the feature vectors
     for(int norm = 0; norm < 26; norm++)
     {

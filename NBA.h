@@ -85,7 +85,7 @@ private:
     int get_Points_For_Team(double twos, double threes,double free_throws, double two_per, double three_per, double free_per);
 
     //Used to get the winner from two teams in that series...
-    Current_Teams get_winner_From_two(Current_Teams one, Current_Teams two);
+    Current_Teams get_winner_From_two(Current_Teams &one, Current_Teams &two);
 
     //lists for reference sake...
     vector<Past_Champions> past_championship_teams;//used to to know the stats and the champ from the past

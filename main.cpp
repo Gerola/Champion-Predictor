@@ -15,18 +15,3 @@ int main(void)
     Course_Project.Run_Program();//Run the program
     return 0;
 }
-
-
-
-// -Testing the champ teams Result: Passed!!
-// -Testing conference teams Result: Passed!!
-// -Testing getting the first team Result: Passed!!
-// -Testing getting team stats Result: Passed!!
-// -Testing Similarity Result: Passed!!
-// -Testing Playoff sim Results: Passed!!
-// -Testing the current data Results: Passed!!!
-// -Testing the next years stats Results: Pending??
-
-
-//Work on the getting the next years stats now and then compute the predicted champion...
-//WORK ON THE PREDICTED CHAMPION FOR THE FOLLOWING SEASON!!!

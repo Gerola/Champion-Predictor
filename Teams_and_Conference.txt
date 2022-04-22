@@ -15,7 +15,7 @@ Los Angeles Lakers,W
 Memphis Grizzlies,W
 Miami Heat,E
 Milwaukee Bucks,E
-Minnesota Timberwolves,E
+Minnesota Timberwolves,W
 New Orleans Pelicans,W
 New York Knicks,E
 Oklahoma City Thunder,W
