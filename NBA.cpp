@@ -210,13 +210,14 @@ void Predict_Champ::get_Sim_and_Champ_Future()
      //Get the average for this particular similulated year
     for(int normalize = 0; normalize < 26; normalize++)//get the average for the year to be able to normalize
     {
-        get_average_for_year[normalize] = get_average_for_year[normalize] / 30;
+        get_average_for_year[normalize] = double(get_average_for_year[normalize]) / 30.0;
     }
     this->average_of_past_years = get_average_for_year;//set that
     this->calculate_Similarity();//run similarity
     this->playoff_Sim();//run playoff sim
 }
 
+//Look over this function...
 int Predict_Champ::get_Points_For_Team(double twos, double threes, double free_throws, double two_per, double three_per, double free_per)
 {
 
@@ -557,15 +558,12 @@ void Predict_Champ::playoff_Sim()
     else//the current year 2021-2022
     {
         Past_Champions champion;//make past champion object
-        vector<double> champ;//vector for the champion team
-        double data = 0.0;//what the normalized value is
         if(t_one_east == 10)
         {
             this->champion_current_year = team_one_east.team_name;
             for(int index = 0; index < 26; index++)
             {
-                data = team_one_east.stats_for_team[index] - this->average_of_past_years[index];
-                champ.push_back(data);
+                champion.stats_for_team[index] = team_one_east.stats_for_team[index] - this->average_of_past_years[index];
             }
         }
         else if (t_two_east == 10)
@@ -573,8 +571,7 @@ void Predict_Champ::playoff_Sim()
             this->champion_current_year = team_two_east.team_name;
             for(int index = 0; index < 26; index++)
             {
-                data = team_two_east.stats_for_team[index] - this->average_of_past_years[index];
-                champ.push_back(data);
+                champion.stats_for_team[index] = team_two_east.stats_for_team[index] - this->average_of_past_years[index];
             }
         }
         else if (t_three_east == 10)
@@ -582,8 +579,7 @@ void Predict_Champ::playoff_Sim()
             this->champion_current_year = team_three_east.team_name;
             for(int index = 0; index < 26; index++)
             {
-                data = team_three_east.stats_for_team[index] - this->average_of_past_years[index];
-                champ.push_back(data);
+                champion.stats_for_team[index] = team_three_east.stats_for_team[index] - this->average_of_past_years[index];
             }
         }
         else if (t_one_west == 10)
@@ -591,8 +587,7 @@ void Predict_Champ::playoff_Sim()
             this->champion_current_year = team_one_west.team_name;
             for(int index = 0; index < 26; index++)
             {
-                data = team_one_west.stats_for_team[index] - this->average_of_past_years[index];
-                champ.push_back(data);
+                champion.stats_for_team[index] = team_one_west.stats_for_team[index] - this->average_of_past_years[index];
             }
         }
         else if (t_two_west == 10)
@@ -600,8 +595,7 @@ void Predict_Champ::playoff_Sim()
             this->champion_current_year = team_two_west.team_name;
             for(int index = 0; index < 26; index++)
             {
-                data = team_two_west.stats_for_team[index] - this->average_of_past_years[index];
-                champ.push_back(data);
+                champion.stats_for_team[index] = team_two_west.stats_for_team[index] - this->average_of_past_years[index];
             }
         }
         else if (t_three_west == 10)
@@ -609,12 +603,10 @@ void Predict_Champ::playoff_Sim()
             this->champion_current_year = team_three_west.team_name;        
             for(int index = 0; index < 26; index++)
             {
-                data = team_three_west.stats_for_team[index] - this->average_of_past_years[index];
-                champ.push_back(data);
+                champion.stats_for_team[index] = team_three_west.stats_for_team[index] - this->average_of_past_years[index];
             }
 
         }
-        champion.stats_for_team = champ;//after all normalized set to the stats
         champion.team_name = this->champion_current_year;//set the name
         this->past_championship_teams.push_back(champion);//push back and with the functions called it will increment the number of teams
     }
@@ -623,15 +615,13 @@ void Predict_Champ::playoff_Sim()
 void Predict_Champ::calculate_Similarity()
 {
     double sim = 0, team_mag = 0.0, champ_mag = 0.0, numerator = 0.0;
-    Current_Teams place;
-    place.similarity = -100;
     //Reset to be used for the placement of teams...
-    this->final_Six_west[0] = place;
-    this->final_Six_west[1] = place;
-    this->final_Six_west[2] = place;
-    this->final_Six_east[0] = place;
-    this->final_Six_east[1] = place;
-    this->final_Six_east[2] = place;
+    this->final_Six_west[0].similarity = -100;
+    this->final_Six_west[1].similarity = -100;
+    this->final_Six_west[2].similarity = -100;
+    this->final_Six_east[0].similarity = -100;
+    this->final_Six_east[1].similarity = -100;
+    this->final_Six_east[2].similarity = -100;
 
     for(int champ = 0; champ < this->place_In_Champ_Calculations; champ++)
     {
@@ -696,8 +686,7 @@ void Predict_Champ::calculate_Similarity()
             this->final_Six_west[2] = this->western_Conference_Teams[west];
         }
     }
-
-
+    
     for(int east = 0; east < this->eastern_Conference_Teams.size(); east++)
     {
         if(this->eastern_Conference_Teams[east].similarity > this->final_Six_east[0].similarity)
@@ -778,7 +767,7 @@ void Predict_Champ::get_Stats_Zero_One()
     First_Team.close();
     for(int norm = 0; norm < 26; norm++)
     {
-        average_of_year[norm] = average_of_year[norm] / total_teams;
+        average_of_year[norm] = double(average_of_year[norm]) / total_teams;
         champion_vector[norm] = champion_vector[norm] - average_of_year[norm];//normalize the vector so it can be used later in the calulations...
     }
     this->past_championship_teams[this->place_In_Champ_Calculations].stats_for_team = champion_vector;
@@ -794,15 +783,11 @@ void Predict_Champ::get_Stats_For_Team(string file)
     int place = 0, total_teams = 0;
     char conference;
     Current_Teams team;
-    string champion = "";
+    string champion = "N/A";
     vector<double> champion_vector, average_of_year, team_total;
     if(this->still_Past_Years == true)
     {
          champion = this->past_championship_teams[this->place_In_Champ_Calculations].team_name;//set the team name to the first champion is this case for 2000-2001 year
-    }
-    else
-    {
-        champion = "N/A";//not applicable because it is the present teams being looked at...
     }
     for(int pop = 0; pop < 26; pop++)
     {

@@ -17,7 +17,7 @@ class Predict_Champ
 public:
     Predict_Champ()
     {
-        this->place_In_Champ_Calculations = 0;
+        this->place_In_Champ_Calculations = 0;//start at zero since no champions present
     }
     ~Predict_Champ()
     {
@@ -74,7 +74,6 @@ private:
     //Print the output of the program
     void print_Final_Teams();
 
-
     //Similarity function
     void calculate_Similarity();
 
@@ -92,7 +91,7 @@ private:
     vector<Team_Conference> list_of_team_names_conference;//to know where to place teams...
     
     //used for the confidence levels...
-    int champ_team_in_Final_Six[20];//used to find the confidence
+    int champ_team_in_Final_Six[20];//used to find the confidence, out of 20 how many were actually correct
     int champ_team_Pred_Six[20];
     double confidence_team_in_Final_Six;//actual confidence levels from past calulations
     double confidence_team_Pred_Champ;
@@ -101,19 +100,16 @@ private:
     int place_In_Champ_Calculations;//know what year to look place in the past champions list, and how far to go in the sim calulations for the past teams...
 
 
-    //Final Four teams array used in the past and present teams...
+    //Final Four teams array used in the past, present and future teams...
     Current_Teams final_Six_west[3];
     Current_Teams final_Six_east[3];
 
-    //Used as temp places to put the vectors to be compared from the past years...
     //This is so the stats don't need to be normalized and their stats used later in the task
     vector<double> average_of_past_years;
 
     //Vectors that are used in the stats getting functions...
     vector<Current_Teams> eastern_Conference_Teams;
     vector<Current_Teams> western_Conference_Teams;
-
-
 
     //Used in the printing function of the task...
     string final_teams_current_year[6];//printed out later...
