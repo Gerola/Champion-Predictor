@@ -217,16 +217,15 @@ void Predict_Champ::get_Sim_and_Champ_Future()
     this->playoff_Sim();//run playoff sim
 }
 
-//Look over this function...
 int Predict_Champ::get_Points_For_Team(double twos, double threes, double free_throws, double two_per, double three_per, double free_per)
 {
 
-    int random_number = rand() % 100 + 1;//initial random number
+    int random_number = rand() % 101;//initial random number 0-100 number
     int points = 0;//total points
     //First the two pointers...
     for(int point_two = 0; point_two <= twos; point_two++)//two point shots
     {
-        random_number = rand() % 100 + 1;//random number
+        random_number = rand() % 101;//random number
         if(random_number <= two_per)//less than or equal to then add the points
         {
             points += 2;
@@ -235,7 +234,7 @@ int Predict_Champ::get_Points_For_Team(double twos, double threes, double free_t
     //Now the three pointers...
     for(int three_points = 0; three_points <= threes; three_points++)//number of three point shots
     {
-        random_number = rand() % 100 + 1;
+        random_number = rand() % 101;
         if(random_number <= three_per)//less than or equal to add three points
         {
             points += 3;
@@ -245,7 +244,7 @@ int Predict_Champ::get_Points_For_Team(double twos, double threes, double free_t
     //Finally the free-throws
     for(int one_points = 0; one_points <= free_throws; one_points++)//free throws
     {
-        random_number = rand() % 100 + 1;
+        random_number = rand() % 101;
         if(random_number <= free_per)//less than or equal to add one point
         {
             points += 1;
