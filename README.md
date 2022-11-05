@@ -1,6 +1,5 @@
-# Data_Mining_Project_2022
+# Can Stats Alone Be Used to Predict a Champion?
 
-**Author:**<br>
-Matthew Gerola<br>
-CptS 315: Spring 2022<br>
-**Refer to the Report PDF for more information**<br>
+# **Motivation:**
+   The motivation behind this project stems from the importance stats now play in sports, with stats dominating decision making. Whether to take a three in basketball, go for it on fourth down in football, or shift the defense in baseball, all these decisions are now based on stats from previous outcomes and the possibility of success. Which is why I want to see just how powerful stats are by using them to try and predict a champion.
+   
